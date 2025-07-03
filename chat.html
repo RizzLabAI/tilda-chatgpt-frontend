@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+      input, button { margin-top: 10px; width: 100%; padding: 8px; }
+    </style>
+  </head>
+  <body>
+    <h2>Chat with AI</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      async function sendMessage() {
+        const input = document.getElementById("user-input");
+        const chatBox = document.getElementById("chat-box");
+        const message = input.value;
+        if (!message) return;
+
+        chatBox.innerHTML += `<div><b>You:</b> ${message}</div>`;
+        input.value = "";
+
+        const res = await fetch("https://tilda-chatgpt-backend.vercel.app/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        chatBox.innerHTML += `<div><b>AI:</b> ${data.response}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
